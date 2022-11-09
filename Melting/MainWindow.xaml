@@ -1,0 +1,288 @@
+﻿<Window
+    x:Class="Melting.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    Title="MeltingClient"
+    Width="720"
+    Height="480"
+    MinWidth="360"
+    MinHeight="240"
+    MaxWidth="1280"
+    MaxHeight="1024"
+    mc:Ignorable="d">
+
+    <behaviors:Interaction.Triggers>
+        
+    </behaviors:Interaction.Triggers>
+
+    <Grid>
+        <!--  Разметка сетки  -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*" MinWidth="240" />
+            <ColumnDefinition Width="4*" MinWidth="240" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36" />
+            <RowDefinition Height="5*" MinHeight="80" />
+            <RowDefinition Height="5*" MinHeight="80" />
+        </Grid.RowDefinitions>
+
+        <!--  Блок верхнего меню  -->
+        <Menu
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
+            <MenuItem Header="Дополнительно">
+                <MenuItem Click="MenuItem_NormalWindow_Click" Header="Нормализовать окно" />
+                <Separator />
+                <MenuItem Click="MenuItem_About_Click" Header="О программе" />
+            </MenuItem>
+            <MenuItem Header="TEC">
+                <MenuItem Command="{Binding Path=OpenTecSettingCommand}" Header="Настройка" />
+            </MenuItem>
+            <MenuItem Header="ВАХ">
+                <MenuItem Header="Настройка" />
+            </MenuItem>
+        </Menu>
+
+        <!--  Блок для TEC части  -->
+        <GroupBox
+            Name="GBox_TEC"
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="10"
+            Padding="5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            hc:TitleElement.TitlePlacement="Left"
+            Background="White"
+            DataContext="{Binding TecDevice}"
+            Foreground="White"
+            Header="TEC"
+            Style="{StaticResource GroupBoxTab}">
+            <hc:TitleElement.Background>
+                <LinearGradientBrush>
+                    <GradientStop Offset="0.2" Color="#12b3eb" />
+                    <GradientStop Offset="0.4" Color="#00a4f7" />
+                    <GradientStop Offset="0.6" Color="#0092ff" />
+                    <GradientStop Offset="0.8" Color="#007cff" />
+                    <GradientStop Offset="1" Color="#5460f9" />
+                </LinearGradientBrush>
+            </hc:TitleElement.Background>
+
+            <!--  Конетнт Пельтье блока  -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*" />
+                    <RowDefinition Height="10*" />
+                    <RowDefinition Height="10*" />
+                    <RowDefinition Height="10*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Выбор температура  -->
+                <hc:NumericUpDown
+                    Name="Num_TEC_tempeture_changer"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Width="180"
+                    Margin="5,5,20,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    hc:Increment="0.1"
+                    hc:InfoElement.Title="Температура, °C"
+                    hc:InfoElement.TitlePlacement="Left"
+                    Maximum="100"
+                    Minimum="0"
+                    Style="{StaticResource NumericUpDownExtend}"
+                    ValueFormat="N2"
+                    Value="{Binding TargetTemp}" />
+                <!--  Кнопка установки температуры  -->
+                <Button
+                    Name="Lbl_TEC_Setter_target_tempeture"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Width="100"
+                    Command="{Binding SetTargetCommand}"
+                    Content="Установить" />
+                <!--  Текст  -->
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="5,5,20,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockDefaultBold}"
+                    Text="Измеренная температура, °C" />
+                <Label
+                    Name="Lbl_TEC_Measurement_tempeture"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Width="100"
+                    Content="{Binding SensorTemp, UpdateSourceTrigger=PropertyChanged}"
+                    ContentStringFormat="{}{0:F3}" />
+                <!--  Текст  -->
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="5,5,20,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockDefaultBold}"
+                    Text="Целевая температура, °C" />
+                <Label
+                    Name="Lbl_Setted_TEC_tempeture"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="100"
+                    Content="{Binding DevTarget, UpdateSourceTrigger=PropertyChanged}"
+                    ContentStringFormat="{}{0:F3}" />
+                <!--  Текст  -->
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Margin="5,5,20,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TextBlockDefault}"
+                    Text="Термостатирование" />
+                <ToggleButton
+                    Name="ToggleBtn_Enable_TEC"
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Width="100"
+                    Command="{Binding EnablePeltieCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource self}, Path=IsChecked}"
+                    IsChecked="{Binding IsEnablePeltie, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource ToggleButtonSwitch}" />
+            </Grid>
+        </GroupBox>
+
+        <!--  Блок для ВАХ характеристик  -->
+        <GroupBox
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="10"
+            Padding="5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            hc:TitleElement.TitlePlacement="Left"
+            Background="White"
+            Foreground="White"
+            Header="I-V"
+            Style="{StaticResource GroupBoxTab}">
+            <hc:TitleElement.Background>
+                <LinearGradientBrush StartPoint="0.3,0" EndPoint="0.3,1">
+                    <GradientStop Offset="0.2" Color="#456fe8" />
+                    <GradientStop Offset="0.4" Color="#1382ef" />
+                    <GradientStop Offset="0.6" Color="#0093f1" />
+                    <GradientStop Offset="0.8" Color="#00a2f0" />
+                    <GradientStop Offset="1" Color="#19b0ec" />
+                </LinearGradientBrush>
+            </hc:TitleElement.Background>
+            <!--  Конетнт ВАХ блока  -->
+            <Grid />
+
+        </GroupBox>
+
+        <!--  Блок для бокового меню (Доп настройки)  -->
+        <TabControl
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="10,10,10,40"
+            Style="{StaticResource TabControlInLine}"
+            TabStripPlacement="Top">
+            <!--  Первый элемент таба  -->
+            <TabItem DataContext="{Binding Ports}" Header="COM Port">
+                <StackPanel VerticalAlignment="Stretch">
+                    <!--  Разделитель  -->
+                    <hc:Divider
+                        Margin="10"
+                        HorizontalContentAlignment="Left"
+                        Content="Порт" />
+                    <!--  Выбор порта  -->
+                    <ComboBox
+                        Name="CmbBox_COM_ports"
+                        Margin="5"
+                        hc:InfoElement.Placeholder="Выбрете COM port"
+                        hc:InfoElement.Title="Номер порта"
+                        hc:InfoElement.TitlePlacement="Left"
+                        DisplayMemberPath="ComPortName"
+                        ItemsSource="{Binding Ports}"
+                        SelectedItem="{Binding SelectedPort, Mode=TwoWay}"
+                        SelectedValuePath="IdValue"
+                        Style="{StaticResource ComboBoxExtend}" />
+                    <!--  Кнопки управления  -->
+                    <hc:ButtonGroup Margin="5">
+                        <Button
+                            Name="Btn_Com_Connect"
+                            Command="{Binding OpenPortCommand}"
+                            Content="Подкл." />
+                        <Button
+                            Name="Btn_Com_Disconnect"
+                            Command="{Binding ClosePortCommand}"
+                            Content="Откл." />
+                    </hc:ButtonGroup>
+                </StackPanel>
+            </TabItem>
+            <!--  Второй элемент таба  -->
+            <TabItem DataContext="{Binding Sched}" Header="Logger">
+                <StackPanel VerticalAlignment="Stretch">
+                    <!--  Разделитель  -->
+                    <hc:Divider
+                        Margin="10"
+                        HorizontalContentAlignment="Left"
+                        Content="Частота опроса, раз/с" />
+                    <!--  Кнопки выбора скороти  (Надо сделать бинд)  -->
+                    <hc:ButtonGroup Margin="5">
+                        <RadioButton Command="{Binding ActiveXSchedulerCommand}" Content="1">
+                            <RadioButton.CommandParameter>
+                                <s:Int32>1</s:Int32>
+                            </RadioButton.CommandParameter>
+                        </RadioButton>
+                        <RadioButton Command="{Binding ActiveXSchedulerCommand}" Content="5">
+                            <RadioButton.CommandParameter>
+                                <s:Int32>5</s:Int32>
+                            </RadioButton.CommandParameter>
+                        </RadioButton>
+                        <RadioButton Command="{Binding ActiveXSchedulerCommand}" Content="10">
+                            <RadioButton.CommandParameter>
+                                <s:Int32>10</s:Int32>
+                            </RadioButton.CommandParameter>
+                        </RadioButton>
+                    </hc:ButtonGroup>
+                    <!--  Кнопки управления  -->
+                    <hc:ButtonGroup Margin="5">
+                        <Button
+                            Name="Btn_Logger_On"
+                            Command="{Binding StartLoggingCommand}"
+                            Content="Вкл." />
+                        <Button
+                            Name="Btn_Logger_Off"
+                            Command="{Binding StopLoggingCommand}"
+                            Content="Выкл." />
+                    </hc:ButtonGroup>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+        <!--  Шилды с полезной информацией  -->
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
+            Orientation="Horizontal" />
+    </Grid>
+
+</Window>

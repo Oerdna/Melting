@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+   <Target Name="RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">
+    <!-- Work around https://github.com/dotnet/wpf/issues/6792 -->
+
+    <ItemGroup>
+        <FilteredAnalyzer Include="@(Analyzer-&gt;Distinct())" />
+        <Analyzer Remove="@(Analyzer)" />
+        <Analyzer Include="@(FilteredAnalyzer)" />
+    </ItemGroup>
+  </Target>
+		
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>ico\main.ico</ApplicationIcon>
+  </PropertyGroup>
+		
+  <ItemGroup>
+    <Content Include="ico\main.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="HandyControl" Version="3.3.0" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.501" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="System.IO.Ports" Version="7.0.0-rc.2.22472.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ServiceSender\Commands\" />
+  </ItemGroup>
+	
+</Project>
