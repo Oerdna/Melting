@@ -23,6 +23,13 @@ namespace Melting.ModelView
             window_tec_setting.Show();
         }
 
+        [RelayCommand]
+        public void HandlerClosing()
+        {
+            // Stop Thread
+            if (Sender.IsLooping) Sender.Stop();
+        }
+
         public ThreadSender Sender { get; set; }
 
         public ComPorts Ports { get; set; }

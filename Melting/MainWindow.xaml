@@ -17,7 +17,9 @@
     mc:Ignorable="d">
 
     <behaviors:Interaction.Triggers>
-        
+        <behaviors:EventTrigger EventName="Closing">
+            <behaviors:InvokeCommandAction Command="{Binding Path=HandlerClosingCommand}" />
+        </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
 
     <Grid>
